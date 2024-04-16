@@ -34,6 +34,7 @@
   import arcanaAuthModule from '@web3-onboard/arcana-auth'
   import venlyModule from '@web3-onboard/venly'
   import bitgetModule from '@web3-onboard/bitget'
+  import particleAuthModule from '@web3-onboard/particle-network'
   import capsuleModule, { Environment } from '@web3-onboard/capsule'
   import {
     recoverAddress,
@@ -195,6 +196,12 @@
     // for more info see the @web3-onboard/magic docs
   })
 
+  const particle = particleAuthModule({
+    projectId: 'b385ccf0-73c3-485a-9941-159b7855b806',
+    clientKey: 'cSTLqhvONB5j588Wz6E5WJLMPrHeUlGbymf1DFhO',
+    appId: 'b1f0239a-edb0-41f9-b0f5-ab780bb02a9e'
+  })
+
   const dcent = dcentModule()
   const bitget = bitgetModule()
   const frameWallet = frameModule()
@@ -216,11 +223,11 @@
   const onboard = Onboard({
     wallets: [
       metamaskSDKWallet,
+      coinbaseWallet,
       injected,
       ledger,
       trezor,
       walletConnect,
-      coinbaseWallet,
       phantom,
       safe,
       trust,
@@ -247,7 +254,8 @@
       cedeStore,
       arcanaAuth,
       blocto,
-      venly
+      venly,
+      particle
     ],
     // transactionPreview,
     gas,
@@ -290,22 +298,22 @@
         rpcUrl: 'https://nova.arbitrum.io/rpc'
       },
       {
-        id: '0x5',
-        token: 'ETH',
-        label: 'Goerli',
-        rpcUrl: 'https://ethereum-goerli.publicnode.com'
-      },
-      {
         id: '0x13881',
         token: 'MATIC',
         label: 'Polygon - Mumbai',
-        rpcUrl: 'https://matic-mumbai.chainstacklabs.com	'
+        rpcUrl: 'https://polygon-mumbai-bor-rpc.publicnode.com'
       },
       {
         id: '0x2105',
         token: 'ETH',
         label: 'Base',
         rpcUrl: 'https://mainnet.base.org'
+      },
+      {
+        id: '0xa4ec',
+        token: 'ETH',
+        label: 'Celo',
+        rpcUrl: 'https://1rpc.io/celo'
       },
       {
         id: '0x38',
@@ -332,8 +340,14 @@
       {
         id: 10,
         token: 'OETH',
-        label: 'Optimism',
+        label: 'OP Mainnet',
         rpcUrl: 'https://mainnet.optimism.io'
+      },
+      {
+        id: 666666666,
+        token: 'DEGEN',
+        label: 'Degen',
+        rpcUrl: 'https://rpc.degen.tips'
       }
     ],
     connect: {
@@ -390,7 +404,7 @@
           //     type: 'hint',
           //     message: 'Your in the pool, hope you brought a towel!',
           //     autoDismiss: 0,
-          //     link: `https://goerli.etherscan.io/tx/${transaction.hash}`
+          //     link: `https://sepolia.etherscan.io/tx/${transaction.hash}`
           //   }
           // }
         },
@@ -594,6 +608,10 @@
   const updateTheme = () => {
     onboard.state.actions.updateTheme(selectedTheme)
   }
+
+  function isSVG(str) {
+    return str.includes('<svg')
+  }
 </script>
 
 <style>
@@ -735,13 +753,13 @@
             >Set Chain to Mainnet</button
           >
           <button on:click={() => onboard.setChain({ chainId: '0x5' })}
-            >Set Chain to Goerli</button
+            >Set Chain to Sepolia</button
           >
           <button on:click={() => onboard.setChain({ chainId: '0x89' })}
             >Set Chain to Matic</button
           >
           <button on:click={() => onboard.setChain({ chainId: 10 })}
-            >Set Chain to Optimism</button
+            >Set Chain to OP Mainnet</button
           >
         </div>
         <div class="position-buttons">
@@ -808,7 +826,15 @@
     {#each $wallets$ as { icon, label, accounts, chains, provider, instance }}
       <div class="connected-wallet" data-testid="connected-wallet">
         <div class="flex-centered" style="width: 10rem;">
-          <div style="width: 2rem; height: 2rem">{@html icon}</div>
+          <div style="width: 2rem; height: 2rem">
+            {#if isSVG(icon)}
+              <!-- render svg string -->
+              {@html icon}
+            {:else}
+              <!-- load img url -->
+              <img style="width: 2rem; height: 2rem" src={icon} alt="logo" />
+            {/if}
+          </div>
           <span data-testid={label}>{label}</span>
         </div>
 

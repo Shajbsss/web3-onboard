@@ -597,7 +597,7 @@ type Notification = {
 
 type NotificationType = 'pending' | 'success' | 'error' | 'hint'
 
-export declare type Network = 'main' | 'goerli' | 'matic-main' | 'matic-mumbai' | 'local'
+export declare type Network = 'main' | 'sepolia' | 'matic-main' | 'matic-mumbai' | 'local'
 
 export interface UpdateNotification {
   (notificationObject: CustomNotification): {
@@ -629,12 +629,6 @@ const onboard = Onboard({
       token: 'ETH',
       label: 'Ethereum Mainnet',
       rpcUrl: `https://mainnet.infura.io/v3/${INFURA_ID}`
-    },
-    {
-      id: '0x5',
-      token: 'ETH',
-      label: 'Goerli',
-      rpcUrl: `https://goerli.infura.io/v3/${INFURA_ID}`
     },
     {
       id: 11155111,
@@ -669,8 +663,20 @@ const onboard = Onboard({
     {
       id: 10,
       token: 'OETH',
-      label: 'Optimism',
+      label: 'OP Mainnet',
       rpcUrl: 'https://mainnet.optimism.io'
+    },
+    {
+      id: '0xa4ec',
+      token: 'ETH',
+      label: 'Celo',
+      rpcUrl: 'https://1rpc.io/celo'
+    },
+    {
+      id: 666666666,
+      token: 'DEGEN',
+      label: 'Degen',
+      rpcUrl: 'https://rpc.degen.tips'
     }
   ],
   appMetadata: {
@@ -755,6 +761,10 @@ const onboard = Onboard({
 
 To initiate a user to select and connect a wallet you can call the `connectWallet` function on an initialized Onboard instance. It will return a `Promise` that will resolve when the user either successfully connects a wallet, or when they dismiss the UI. The resolved value from the promise will be the latest state of the `wallets` array. The order of the wallets array is last to first, so the most recently selected wallet will be the first item in the array and can be thought of as the "primary wallet". If no wallet was selected, then the `wallets` array will have the same state as it had before calling `connectWallet`.
 
+### Wallet Provider
+
+Wallets connected through web3-onboard are all passed to the dapp following the EIP-1193 standard. This allows for the same interaction between all wallets connected through web3-onboard and abstracts away the challenges of working with different wallet providers.
+
 ### Example
 
 ```javascript
@@ -765,6 +775,10 @@ async function connectWallet() {
 
 connectWallet()
 ```
+
+### Interacting with the providers - Transfer, Send, Sign using ethers.js
+
+For examples of interacting with the wallet providers please see our demo project [here](https://github.com/blocknative/web3-onboard/blob/9b871a1b3117e92a7c87285677fa5b35c544a8e0/packages/demo/src/App.svelte#L447)
 
 ### Auto Selecting a Wallet
 
